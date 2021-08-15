@@ -28,5 +28,6 @@ def get_context_data(self, **kwargs):
     except Product.DoesNotExist:
         raise Http404
 
+    # Allows template to access the object via product key
     context['product'] = product
     return context
