@@ -1,0 +1,10 @@
+<ul style="padding: 0px">
+  {% for product in product_list %}
+  <li>
+  <img src={{product.image.url}} alt={{product.name}} />
+    <p>{{product.name}}</p>
+    <p>${{product.price}}</h1>
+    <a href={{product.id}}>Details</a>
+  </li>
+  {% endfor %}
+</ul>
