@@ -20,7 +20,8 @@ class OptionItem(models.Model):
 
 class ProductOption(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
-    option = models.ForeignKey(Option, on_delete=models.CASCADE)
+    option_item = models.ForeignKey(
+        OptionItem, on_delete=models.CASCADE, default=None)
 
     def __str__(self):
-        return self.option.name
+        return self.option_item.name
