@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'graphene_django',
 ]
 
 MIDDLEWARE = [
@@ -87,6 +88,11 @@ DATABASES = {
         'PORT': 5432,
     }
 }
+
+GRAPHENE = {
+    "SCHEMA": "api.schema.schema",
+}
+
 
 
 # Password validation

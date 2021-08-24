@@ -1,7 +1,6 @@
 from django.db import models
 from category.models import Category
 
-
 class Product(models.Model):
     sku = models.CharField(max_length=20)
     name = models.CharField(max_length=150)
