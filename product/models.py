@@ -10,7 +10,7 @@ class Product(models.Model):
     image = models.ImageField(upload_to='product_images/')
     thumbnail = models.ImageField(blank=True, upload_to='product_images/')
     created_date = models.DateField(auto_now=True)
-    category = models.ForeignKey(Category, on_delete=models.CASCADE)
+    category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='products')
     stock = models.SmallIntegerField()
 
     def __str__(self):

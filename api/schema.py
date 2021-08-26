@@ -1,9 +1,10 @@
 import graphene
 from graphene_django import DjangoObjectType
-from product.query import ProductQuery
+from product.graphql.query import ProductQuery
+from category.graphql.query import CategoryQuery
 
 
-class Query(ProductQuery):
+class Query(CategoryQuery, ProductQuery):
     pass
 
 
