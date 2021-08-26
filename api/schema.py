@@ -4,7 +4,7 @@ from product.graphql.query import ProductQuery
 from category.graphql.query import CategoryQuery
 
 
-class Query(CategoryQuery, ProductQuery):
+class Query(ProductQuery):
     pass
 
 
