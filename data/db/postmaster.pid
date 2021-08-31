@@ -1,6 +1,10 @@
 1
 /var/lib/postgresql/data
+<<<<<<< HEAD
 1629997930
+=======
+1630040457
+>>>>>>> fix: cors errors
 5432
 /var/run/postgresql
 *
