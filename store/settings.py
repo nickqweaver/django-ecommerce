@@ -42,6 +42,8 @@ INSTALLED_APPS = [
     'customer',
     'option',
     'product',
+    'product_variant',
+    'brand',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -49,7 +51,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'graphene_django',
-    
+
 ]
 
 MIDDLEWARE = [
@@ -101,7 +103,6 @@ DATABASES = {
 GRAPHENE = {
     "SCHEMA": "api.schema.schema",
 }
-
 
 
 # Password validation

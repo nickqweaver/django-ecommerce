@@ -1,38 +1,42 @@
 from django.db import models
-from product.models import Product
 # Create your models here.
 
-class BrandOption(models.Model):
-    name = models.CharField(max_length=30)
 
-    def __str__(self):
-        return self.name
+class BoltPatterns():
+    RZR = 'RZR'
+    CAN = 'CAN'
+    BOLT_PATTERN_CHOICES = [
+        (RZR, '14x136'),
+        (CAN, '14x156'),
+    ]
+
+    def get_choices(self):
+        return self.BOLT_PATTERN_CHOICES
+
+
+class WheelSizes():
+    XSMALL = 'XS'
+    SMALL = 'S'
+    MEDIUM = 'M'
+    LARGE = 'L'
+    XLARGE = 'XL'
+    WHEEL_SIZE_CHOICES = [
+        (XSMALL, '14x8'),
+        (SMALL, '14x10'),
+        (MEDIUM, '15x7'),
+        (LARGE, '15x8'),
+        (XLARGE, '15x10'),
+    ]
+
+    def get_choices(self):
+        return self.WHEEL_SIZE_CHOICES
+
 
 class Option(models.Model):
-    name = models.CharField(max_length=30)
+    wheel_size = models.CharField(
+        max_length=2, choices=WheelSizes().get_choices(), default='M')
+    bolt_pattern = models.CharField(
+        max_length=3, choices=BoltPatterns().get_choices(), default='RZR')
 
     def __str__(self):
         return self.name
-
-
-class OptionItem(models.Model):
-    name = models.CharField(max_length=100)
-    option = models.ForeignKey(Option, on_delete=models.CASCADE)
-
-    def __str__(self):
-        return f'{self.option.name} - {self.name}'
-
-
-class ProductOption(models.Model):
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
-    option_item = models.ForeignKey(
-        OptionItem, on_delete=models.CASCADE, default=None)
-
-    def __str__(self):
-        return self.option_item.name
-
-class ProductBrandOption(models.Model):
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
-    brand_option = models.ForeignKey(
-        BrandOption, on_delete=models.CASCADE, default=None)
-
