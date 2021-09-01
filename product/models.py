@@ -16,7 +16,7 @@ class BaseProduct(models.Model):
     weight = models.DecimalField(max_digits=10, decimal_places=2)
 
     def __str__(self):
-        return f' {self.name} - SKU: {self.sku}'
+        return f'{self.name}'
 
 
 class WheelProductModel(BaseProduct):
