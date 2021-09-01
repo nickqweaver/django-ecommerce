@@ -22,3 +22,7 @@ class BaseProduct(models.Model):
 
 class WheelProductModel(BaseProduct):
     pass
+
+
+class TireProductModel(BaseProduct):
+    pass
