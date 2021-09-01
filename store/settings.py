@@ -40,7 +40,6 @@ INSTALLED_APPS = [
     'corsheaders',
     'category',
     'customer',
-    'option',
     'product',
     'product_variant',
     'brand',

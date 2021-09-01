@@ -1,7 +1,6 @@
 from django.db import models
 from category.models import Category
 from brand.models import Brand
-from option.models import Option
 
 
 class BaseProduct(models.Model):
