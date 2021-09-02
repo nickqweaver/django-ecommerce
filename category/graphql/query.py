@@ -2,12 +2,12 @@ from graphene import List, Field, ObjectType, String
 from .types import ProductType
 from category.models import Category
 from .types import CategoryType
-from product.graphql.types import ProductType
+from product.graphql.types import AllProductType
 
 
 class CategoryQuery(ObjectType):
     get_all_categories = List(CategoryType)
-    get_products_from_category = List(ProductType, category_name=String())
+    get_products_from_category = List(AllProductType, category_name=String())
 
     def resolve_get_all_categories(root, info):
         try:
@@ -19,7 +19,7 @@ class CategoryQuery(ObjectType):
     def resolve_get_products_from_category(root, info, category_name):
         try:
             products = Category.objects.get(
-                name__iexact=category_name).products.all()
+                name__iexact=category_name).products.all().select_subclasses()
             return products
         except:
             raise Exception("There are no products with that category name")

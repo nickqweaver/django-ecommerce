@@ -1,44 +1,15 @@
-from graphene import List, Field, ObjectType, ID, Union, Decimal
+from graphene import List, Field, ObjectType, ID, Union, Decimal, Int
 from .types import ProductType
-from product.models import BaseProduct, WheelProductModel, TireProductModel
-from product_variant.graphql.types import WheelVariantType
-from graphene_django import DjangoObjectType
-
-
-class WheelProductType(DjangoObjectType):
-    lowest_variant_price = Decimal()
-    variants = List(WheelVariantType)
-
-    class Meta:
-        model = WheelProductModel
-
-    def resolve_lowest_variant_price(root, info):
-        return root.get_lowest_variant_price()
-
-    def resolve_variants(root, info):
-        return root.variants.all()
-
-
-class TireProductType(DjangoObjectType):
-    lowest_variant_price = Decimal()
-
-    class Meta:
-        model = TireProductModel
-
-    def resolve_lowest_variant_price(root, info):
-        return root.get_lowest_variant_price()
-
-
-class AllProductType(Union):
-
-    class Meta:
-        types = (WheelProductType, TireProductType)
-        exclude = ('tireproductmodel', 'wheelproductmodel',)
+from product.models import BaseProduct
+from .types import AllProductType, PaginatedProductsType
+from utils.paginator import Paginator
 
 
 class ProductQuery(ObjectType):
     get_all_products = List(AllProductType)
     get_product_by_id = Field(AllProductType, id=ID())
+    get_all_paginated_products = Field(
+        PaginatedProductsType, offset=Int(), limit=Int())
 
     def resolve_get_all_products(root, info):
         try:
@@ -53,3 +24,7 @@ class ProductQuery(ObjectType):
             return product
         except:
             raise Exception("There is no product with that ID")
+
+    def resolve_get_all_paginated_products(root, info, offset, limit):
+        paginator = Paginator(BaseProduct, True)
+        return paginator.get_objects(offset, limit)

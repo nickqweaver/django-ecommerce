@@ -1,6 +1,5 @@
 from django.db import models
 from product.models import WheelProductModel, TireProductModel
-from .choices import WheelSizes, BoltPatterns, Sizes
 # Create your models here.
 
 
@@ -37,28 +36,35 @@ class WheelProductVariant(BaseVariant):
 
 
 class TireProductVariant(BaseVariant):
-    class Height(models.IntegerChoices):
-        TWENTY_EIGHT = 28
-        TWENTY_NINE = 29
-        THIRTY = 30
-        THIRTY_ONE = 31
-        THIRTY_TWO = 32
-        THIRTY_THREE = 33
-        THIRTY_FOUR = 34
-        THIRTY_FIVE = 35
+    WIDTH_CHOICES = (
+        (8, 8),
+        (9, 9),
+        (10, 10)
+    )
 
-    class Width(models.IntegerChoices):
-        EIGHT = 8
-        NINE = 9
-        TEN = 10
+    HEIGHT_CHOICES = (
+        (28, 28),
+        (29, 29),
+        (31, 31),
+        (32, 32),
+        (33, 33),
+        (34, 34),
+        (35, 35),
+    )
+
+    RIM_CIRCUMFERENCE_CHOICES = (
+        (14, 14),
+        (15, 15),
+        (16, 16)
+    )
 
     class RimCircumference(models.IntegerChoices):
         FOURTEEN = 14
         FIFTEEN = 15
         SIXTEEN = 16
 
-    height = models.IntegerField(choices=Height.choices)
-    width = models.IntegerField(choices=Width.choices)
-    rim_circumference = models.IntegerField(choices=RimCircumference.choices)
+    height = models.IntegerField(choices=HEIGHT_CHOICES)
+    width = models.IntegerField(choices=WIDTH_CHOICES)
+    rim_circumference = models.IntegerField(choices=RIM_CIRCUMFERENCE_CHOICES)
     product_model = models.ForeignKey(
         TireProductModel, on_delete=models.CASCADE, related_name='variants')

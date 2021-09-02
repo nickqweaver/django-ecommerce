@@ -2,7 +2,6 @@
 
 from django.db import migrations, models
 import django.db.models.deletion
-import product_variant.choices
 
 
 class Migration(migrations.Migration):
@@ -17,22 +16,30 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='WheelProductVariant',
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('size', models.CharField(choices=[(product_variant.choices.Sizes['XSMALL'], '14x8'), (product_variant.choices.Sizes['SMALL'], '14x10'), (product_variant.choices.Sizes['MEDIUM'], '15x7'), (product_variant.choices.Sizes['LARGE'], '15x8'), (product_variant.choices.Sizes['XLARGE'], '15x10')], default=product_variant.choices.Sizes['MEDIUM'], max_length=2)),
-                ('bolt_pattern', models.CharField(choices=[('RZR', '14x136'), ('CAN', '14x156')], default='RZR', max_length=3)),
-                ('unit_price', models.DecimalField(decimal_places=2, max_digits=10)),
+                ('id', models.BigAutoField(auto_created=True,
+                                           primary_key=True, serialize=False, verbose_name='ID')),
+                ('bolt_pattern', models.CharField(choices=[
+                 ('RZR', '14x136'), ('CAN', '14x156')], default='RZR', max_length=3)),
+                ('unit_price', models.DecimalField(
+                    decimal_places=2, max_digits=10)),
                 ('product_code', models.CharField(max_length=150)),
-                ('product_model', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='variants', to='product.wheelproductmodel')),
+                ('product_model', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE,
+                                                    related_name='variants', to='product.wheelproductmodel')),
             ],
         ),
         migrations.CreateModel(
             name='TireProductVariant',
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('height', models.IntegerField(choices=[(28, 'Twenty Eight'), (29, 'Twenty Nine'), (30, 'Thirty'), (31, 'Thirty One'), (32, 'Thirty Two'), (33, 'Thirty Three'), (34, 'Thirty Four'), (35, 'Thirty Five')])),
-                ('width', models.IntegerField(choices=[(8, 'Eight'), (9, 'Nine'), (10, 'Ten')])),
-                ('rim_circumference', models.IntegerField(choices=[(14, 'Fourteen'), (15, 'Fifteen'), (16, 'Sixteen')])),
-                ('product_model', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='variants', to='product.tireproductmodel')),
+                ('id', models.BigAutoField(auto_created=True,
+                                           primary_key=True, serialize=False, verbose_name='ID')),
+                ('height', models.IntegerField(choices=[(28, 'Twenty Eight'), (29, 'Twenty Nine'), (30, 'Thirty'), (
+                    31, 'Thirty One'), (32, 'Thirty Two'), (33, 'Thirty Three'), (34, 'Thirty Four'), (35, 'Thirty Five')])),
+                ('width', models.IntegerField(choices=[
+                 (8, 'Eight'), (9, 'Nine'), (10, 'Ten')])),
+                ('rim_circumference', models.IntegerField(choices=[
+                 (14, 'Fourteen'), (15, 'Fifteen'), (16, 'Sixteen')])),
+                ('product_model', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE,
+                                                    related_name='variants', to='product.tireproductmodel')),
             ],
         ),
     ]

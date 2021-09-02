@@ -11,11 +11,10 @@ class BaseProduct(models.Model):
     category = models.ForeignKey(
         Category, on_delete=models.CASCADE, related_name='products')
     brand = models.ForeignKey(Brand, models.CASCADE,
-                              related_name='brands', default=None, blank=True)
+                              related_name='products', default=None, blank=True)
     created_date = models.DateField(auto_now=True)
     slug = models.SlugField(max_length=50)
     weight = models.DecimalField(max_digits=10, decimal_places=2)
-
     objects = InheritanceManager()
 
     def __str__(self):
@@ -25,22 +24,37 @@ class BaseProduct(models.Model):
 def lowest_price(variants):
     min = variants[0].unit_price
     for variant in variants:
-        if (variant.unit_price < min):
+        if variant.unit_price < min:
             min = variant
     return min
+
+
+def has_different_pricing(variants):
+    compare = variants[0].unit_price
+    has_different = False
+    for variant in variants:
+        if variant.unit_price != compare:
+            has_different = True
+    return has_different
 
 
 class WheelProductModel(BaseProduct):
 
     def get_lowest_variant_price(self):
-        variants = self.variants.all()
-        return lowest_price(variants)
+        return lowest_price(self.variants.all())
+
+    def has_different_variant_pricing(self):
+        return has_different_pricing(self.variants.all())
+
     pass
 
 
 class TireProductModel(BaseProduct):
 
     def get_lowest_variant_price(self):
-        variants = self.variants.all()
-        return lowest_price(variants)
+        return lowest_price(self.variants.all())
+
+    def has_different_variant_pricing(self):
+        return has_different_pricing(self.variants.all())
+
     pass
