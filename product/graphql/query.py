@@ -26,5 +26,5 @@ class ProductQuery(ObjectType):
             raise Exception("There is no product with that ID")
 
     def resolve_get_all_paginated_products(root, info, offset, limit):
-        paginator = Paginator(BaseProduct, True)
+        paginator = Paginator(BaseProduct.objects, True)
         return paginator.get_objects(offset, limit)
