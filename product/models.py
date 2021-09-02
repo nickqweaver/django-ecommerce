@@ -3,6 +3,13 @@ from category.models import Category
 from brand.models import Brand
 from model_utils.managers import InheritanceManager
 
+'''
+ Look into possibly lifting the lowestVariantPrice logic up to the base product model
+ Then have a universal product type, no need to query separate fragments to display 
+ The store in a grid, the only time we would need product specifics is when a product is clicked, 
+ then the variants would have to utilize fragments to get specific key values
+'''
+
 
 class BaseProduct(models.Model):
     name = models.CharField(max_length=150)
