@@ -1,12 +1,8 @@
 1
 /var/lib/postgresql/data
-<<<<<<< HEAD
-1629997930
-=======
-1630040457
->>>>>>> fix: cors errors
+1630606932
 5432
 /var/run/postgresql
 *
-181436946         0
+182598585         0
 ready   

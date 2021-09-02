@@ -1,39 +1,61 @@
 from graphene_django import DjangoObjectType
-from graphene import Field, List, String, ObjectType
-from product.models import Product 
+from graphene import Field, List, String, ObjectType, Decimal, Union, Boolean
+from product.models import BaseProduct, WheelProductModel, TireProductModel
+from product_variant.graphql.types import WheelVariantType, TireVariantType
 
-class ProductOption(ObjectType):
-    option_category = String()
-    options = List(String)
 
 class ProductType(DjangoObjectType):
-    product_options = List(ProductOption)
-
     class Meta:
         # Reference the model you are accessing
-        model = Product
+        model = BaseProduct
+        exclude = ('tireproductmodel', 'wheelproductmodel')
 
-    def resolve_product_options(self, info):
-        options = []
-        
-        try:
-            product_option_set = self.productoption_set.all()
-            option_categories = []
-            product_options = []
+    def resolve_brand(root, info):
+        return root.brand.name
 
-            for option_item in product_option_set:
-                option_categories.append(option_item.option_item.option.name)
 
-            unique_option_categories = set(option_categories)
+class CommonProductFields(ObjectType):
+    brand = String()
+    lowest_variant_price = Decimal()
+    has_different_variant_pricing = Boolean()
 
-            for unqiue_option_cateogry in unique_option_categories:
-                product_options_queryset = product_option_set.filter(option_item__option__name=unqiue_option_cateogry)
-                filtered_product_options = []
+    def resolve_brand(root, info):
+        return root.brand.name
 
-                for product_option in product_options_queryset:
-                    filtered_product_options.append(product_option.option_item.name)
-                
-                product_options.append(ProductOption(option_category=unqiue_option_cateogry, options=filtered_product_options))
-            return product_options
-        except:
-            raise Exception("No product options found for this product")
+    def resolve_lowest_variant_price(root, info):
+        return root.get_lowest_variant_price()
+
+    def resolve_has_different_variant_pricing(root, info):
+        return root.has_different_variant_pricing()
+
+
+class WheelProductType(DjangoObjectType, CommonProductFields):
+    variants = List(WheelVariantType)
+
+    class Meta:
+        model = WheelProductModel
+
+    def resolve_variants(root, info):
+        return root.variants.all()
+
+
+class TireProductType(DjangoObjectType, CommonProductFields):
+    variants = List(TireVariantType)
+
+    class Meta:
+        model = TireProductModel
+
+    def resolve_variants(root, info):
+        return root.variants.all()
+
+
+class AllProductType(Union):
+
+    class Meta:
+        types = (WheelProductType, TireProductType)
+        exclude = ('tireproductmodel', 'wheelproductmodel',)
+
+
+class PaginatedProductsType(ObjectType):
+    has_more = Boolean()
+    results = List(AllProductType)
