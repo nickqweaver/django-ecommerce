@@ -1,6 +1,7 @@
 from django.db import models
 from category.models import Category
 from brand.models import Brand
+from model_utils.managers import InheritanceManager
 
 
 class BaseProduct(models.Model):
@@ -15,13 +16,31 @@ class BaseProduct(models.Model):
     slug = models.SlugField(max_length=50)
     weight = models.DecimalField(max_digits=10, decimal_places=2)
 
+    objects = InheritanceManager()
+
     def __str__(self):
         return f'{self.name}'
 
 
+def lowest_price(variants):
+    min = variants[0].unit_price
+    for variant in variants:
+        if (variant.unit_price < min):
+            min = variant
+    return min
+
+
 class WheelProductModel(BaseProduct):
+
+    def get_lowest_variant_price(self):
+        variants = self.variants.all()
+        return lowest_price(variants)
     pass
 
 
 class TireProductModel(BaseProduct):
+
+    def get_lowest_variant_price(self):
+        variants = self.variants.all()
+        return lowest_price(variants)
     pass
