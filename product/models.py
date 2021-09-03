@@ -45,7 +45,9 @@ def has_different_pricing(variants):
     return has_different
 
 
-class WheelProductModel(BaseProduct):
+class Common(models.Model):
+    class Meta:
+        abstract = True
 
     def get_lowest_variant_price(self):
         return lowest_price(self.variants.all())
@@ -53,15 +55,10 @@ class WheelProductModel(BaseProduct):
     def has_different_variant_pricing(self):
         return has_different_pricing(self.variants.all())
 
+
+class WheelProductModel(BaseProduct, Common):
     pass
 
 
-class TireProductModel(BaseProduct):
-
-    def get_lowest_variant_price(self):
-        return lowest_price(self.variants.all())
-
-    def has_different_variant_pricing(self):
-        return has_different_pricing(self.variants.all())
-
+class TireProductModel(BaseProduct, Common):
     pass

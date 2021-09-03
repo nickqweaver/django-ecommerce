@@ -12,6 +12,9 @@ class BaseVariant(models.Model):
     class Meta:
         abstract = True
 
+    def __str__(self):
+        return self.product_code
+
 
 class WheelProductVariant(BaseVariant):
     SIZE_CHOICES = (
@@ -45,6 +48,7 @@ class TireProductVariant(BaseVariant):
     HEIGHT_CHOICES = (
         (28, 28),
         (29, 29),
+        (30, 30),
         (31, 31),
         (32, 32),
         (33, 33),
