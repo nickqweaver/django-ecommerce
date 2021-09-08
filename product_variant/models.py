@@ -62,11 +62,6 @@ class TireProductVariant(BaseVariant):
         (16, 16)
     )
 
-    class RimCircumference(models.IntegerChoices):
-        FOURTEEN = 14
-        FIFTEEN = 15
-        SIXTEEN = 16
-
     height = models.IntegerField(choices=HEIGHT_CHOICES)
     width = models.IntegerField(choices=WIDTH_CHOICES)
     rim_circumference = models.IntegerField(choices=RIM_CIRCUMFERENCE_CHOICES)
