@@ -13,11 +13,8 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='wheelproductvariant',
             name='bolt_pattern',
-            field=models.CharField(choices=[('14x136', 'Rzr'), ('14x156', 'Can')], default='RZR', max_length=6),
+            field=models.CharField(
+                choices=[('14x136', 'Rzr'), ('14x156', 'Can')], default='RZR', max_length=6),
         ),
-        migrations.AlterField(
-            model_name='wheelproductvariant',
-            name='size',
-            field=models.CharField(choices=[('14x8', 'Xsmall'), ('14x10', 'Small'), ('15x7', 'Medium'), ('15x8', 'Large'), ('15x10', 'Xlarge')], default='M', max_length=6),
-        ),
+
     ]

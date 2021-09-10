@@ -13,10 +13,12 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='BaseVariant',
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.BigAutoField(auto_created=True,
+                                           primary_key=True, serialize=False, verbose_name='ID')),
                 ('product_code', models.CharField(default='', max_length=150)),
                 ('stock', models.IntegerField(default=0)),
-                ('unit_price', models.DecimalField(decimal_places=2, default=0.0, max_digits=10)),
+                ('unit_price', models.DecimalField(
+                    decimal_places=2, default=0.0, max_digits=10)),
             ],
         ),
         migrations.RemoveField(
@@ -34,10 +36,5 @@ class Migration(migrations.Migration):
         migrations.RemoveField(
             model_name='wheelproductvariant',
             name='unit_price',
-        ),
-        migrations.AlterField(
-            model_name='wheelproductvariant',
-            name='size',
-            field=models.CharField(choices=[('14x8', '14x8'), ('14x10', '14x10'), ('15x7', '15x7'), ('15x8', '15x8'), ('15x10', '15x10')], default='15x7', max_length=6),
         ),
     ]
