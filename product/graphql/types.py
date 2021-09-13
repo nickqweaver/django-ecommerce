@@ -30,10 +30,29 @@ class CommonProductFields(ObjectType):
         return root.has_different_variant_pricing()
 
 
+class CloudinaryImageType(ObjectType):
+    id = String()
+    format = String()
+    type = String()
+    url = String()
+
+    def resolve_id(root, info):
+        return root.public_id
+
+    def resolve_format(root, info):
+        return root.format
+
+    def resolve_type(root, info):
+        return root.type
+
+    def resolve_url(root, info):
+        return root.url
+
+
 class ProductType(ObjectType):
     name = String()
     id = ID()
-    image = String()
+    image = Field(CloudinaryImageType)
     description = String()
     category = Field(CategoryType)
     created_date = Date()
@@ -77,6 +96,9 @@ class ProductType(ObjectType):
     def resolve_has_different_variant_pricing(root, info):
         return root.has_different_variant_pricing()
 
+    def resolve_image(root, info):
+        return root.image
+
 
 class WheelProductType(DjangoObjectType, CommonProductFields):
     variants = List(WheelVariantType)
@@ -84,18 +106,12 @@ class WheelProductType(DjangoObjectType, CommonProductFields):
     class Meta:
         model = WheelProductModel
 
-    def resolve_variants(root, info):
-        return root.variants.all()
-
 
 class TireProductType(DjangoObjectType, CommonProductFields):
     variants = List(TireVariantType)
 
     class Meta:
         model = TireProductModel
-
-    def resolve_variants(root, info):
-        return root.variants.all()
 
 
 class AllProductType(Union):

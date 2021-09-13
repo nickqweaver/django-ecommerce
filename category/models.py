@@ -5,8 +5,6 @@ from django.db import models
 
 class Category(models.Model):
     name = models.CharField(max_length=30)
-    description = models.CharField(max_length=300, blank=True, default='')
-    thumbnail = models.ImageField(blank=True)
 
     def get_product_ids(self):
         products = self.products.all()
