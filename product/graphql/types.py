@@ -106,12 +106,18 @@ class WheelProductType(DjangoObjectType, CommonProductFields):
     class Meta:
         model = WheelProductModel
 
+    def resolve_variants(root, info):
+        return root.variants.all()
+
 
 class TireProductType(DjangoObjectType, CommonProductFields):
     variants = List(TireVariantType)
 
     class Meta:
         model = TireProductModel
+
+    def resolve_variants(root, info):
+        return root.variants.all()
 
 
 class AllProductType(Union):
