@@ -30,4 +30,10 @@ class Paginator():
     def get_objects(self, offset, limit):
         self.current_position = offset + limit
         self.__check_and_set_has_more(self.current_position, self.objects)
-        return PaginatedResults(self.objects.all()[offset:limit], self.has_more, self.with_subclasses)
+        try:
+            results = PaginatedResults(
+                self.objects.all()[offset:limit], self.has_more, self.with_subclasses)
+            return results
+        except:
+            raise Exception(
+                "There was a problem fetching your results")

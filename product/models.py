@@ -23,20 +23,28 @@ class BaseProduct(models.Model):
 
 
 def lowest_price(variants):
-    min = variants[0].unit_price
-    for variant in variants:
-        if variant.unit_price < min:
-            min = variant
-    return min
+    try:
+        min = variants[0].unit_price
+        for variant in variants:
+            if variant.unit_price < min:
+                min = variant
+        return min
+    except:
+        raise Exception(
+            "You need to add variants to your products otherwise we can't calculate a price")
 
 
 def has_different_pricing(variants):
-    compare = variants[0].unit_price
-    has_different = False
-    for variant in variants:
-        if variant.unit_price != compare:
-            has_different = True
-    return has_different
+    try:
+        compare = variants[0].unit_price
+        has_different = False
+        for variant in variants:
+            if variant.unit_price != compare:
+                has_different = True
+        return has_different
+    except:
+        raise Exception(
+            "You need to add variants to your products otherwise we can't calculate a price")
 
 
 class Common(models.Model):
