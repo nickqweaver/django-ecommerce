@@ -1,5 +1,5 @@
 from graphene_django import DjangoObjectType
-from graphene import Field, List, String, ObjectType, Decimal, Union, Boolean, ID, Date
+from graphene import Field, List, String, ObjectType, Decimal, Union, Boolean, ID, Date, NonNull
 from product.models import BaseProduct, WheelProductModel, TireProductModel
 from product_variant.graphql.types import WheelVariantType, TireVariantType, AllVariantsType
 from category.graphql.types import CategoryType
@@ -16,9 +16,9 @@ class BaseProductType(DjangoObjectType):
 
 
 class CommonProductFields(ObjectType):
-    brand = String()
-    lowest_variant_price = Decimal()
-    has_different_variant_pricing = Boolean()
+    brand = NonNull(String)
+    lowest_variant_price = NonNull(Decimal)
+    has_different_variant_pricing = NonNull(Boolean)
 
     def resolve_brand(root, info):
         return root.brand.name
@@ -31,10 +31,10 @@ class CommonProductFields(ObjectType):
 
 
 class CloudinaryImageType(ObjectType):
-    id = String()
+    id = NonNull(String)
     format = String()
     type = String()
-    url = String()
+    url = NonNull(String)
 
     def resolve_id(root, info):
         return root.public_id
@@ -50,18 +50,18 @@ class CloudinaryImageType(ObjectType):
 
 
 class ProductType(ObjectType):
-    name = String()
-    id = ID()
-    image = Field(CloudinaryImageType)
-    description = String()
-    category = Field(CategoryType)
-    created_date = Date()
-    slug = String()
-    weight = Decimal()
-    variants = List(AllVariantsType)
-    brand = String()
-    lowest_variant_price = Decimal()
-    has_different_variant_pricing = Boolean()
+    name = NonNull(String)
+    id = NonNull(ID)
+    image = Field(NonNull(CloudinaryImageType))
+    description = NonNull(String)
+    category = Field(NonNull(CategoryType))
+    created_date = NonNull(Date)
+    slug = NonNull(String)
+    weight = NonNull(Decimal)
+    variants = NonNull(List(NonNull(AllVariantsType)))
+    brand = NonNull(String)
+    lowest_variant_price = NonNull(Decimal)
+    has_different_variant_pricing = NonNull(Boolean)
 
     def resolve_name(root, info):
         return root.name
@@ -129,9 +129,9 @@ class AllProductType(Union):
 
 class PaginatedProductsType(ObjectType):
     has_more = Boolean()
-    results = List(ProductType)
+    results = List(NonNull(ProductType))
 
 
 class PaginatedProductIdsType(ObjectType):
     has_more = Boolean()
-    results = List(ID)
+    results = List(NonNull(ID))

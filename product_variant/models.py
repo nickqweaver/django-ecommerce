@@ -33,7 +33,6 @@ class WheelProductVariant(BaseVariant):
         max_length=6, choices=SIZE_CHOICES, default='15x7')
     bolt_pattern = models.CharField(
         max_length=6, choices=BoltPattern.choices, default='RZR')
-    finish = models.CharField(max_length=150, blank=True)
     product_model = models.ForeignKey(
         WheelProductModel, on_delete=models.CASCADE, related_name='variants')
 

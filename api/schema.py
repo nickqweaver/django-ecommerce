@@ -12,9 +12,9 @@ def convert_cloudinary_to_string(field, registry=None):
 
 from product.graphql.query import ProductQuery
 from category.graphql.query import CategoryQuery
+from product_variant.graphql.query import VariantQuery
 
-
-class Query(CategoryQuery, ProductQuery):
+class Query(CategoryQuery, ProductQuery, VariantQuery):
     pass
 
 
