@@ -1,7 +1,7 @@
 from graphene_django import DjangoObjectType
 from graphene import Field, List, String, ObjectType, Decimal, Union, Boolean, ID, Date, NonNull
 from product.models import BaseProduct, WheelProductModel, TireProductModel
-from product_variant.graphql.types import WheelVariantType, TireVariantType, AllVariantsType
+from product_variant.graphql.types import VariationOptionType, WheelVariantType, TireVariantType, AllVariantsType
 from category.graphql.types import CategoryType
 
 
@@ -13,23 +13,7 @@ class BaseProductType(DjangoObjectType):
 
     def resolve_brand(root, info):
         return root.brand.name
-
-
-class CommonProductFields(ObjectType):
-    brand = NonNull(String)
-    lowest_variant_price = NonNull(Decimal)
-    has_different_variant_pricing = NonNull(Boolean)
-
-    def resolve_brand(root, info):
-        return root.brand.name
-
-    def resolve_lowest_variant_price(root, info):
-        return root.get_lowest_variant_price()
-
-    def resolve_has_different_variant_pricing(root, info):
-        return root.has_different_variant_pricing()
-
-
+    
 class CloudinaryImageType(ObjectType):
     id = NonNull(String)
     format = String()
@@ -62,6 +46,9 @@ class ProductType(ObjectType):
     brand = NonNull(String)
     lowest_variant_price = NonNull(Decimal)
     has_different_variant_pricing = NonNull(Boolean)
+    variation_options = List(NonNull(VariationOptionType))
+
+
 
     def resolve_name(root, info):
         return root.name
@@ -98,9 +85,14 @@ class ProductType(ObjectType):
 
     def resolve_image(root, info):
         return root.image
+    
+    def resolve_variation_options(root, info):
+        return root.get_variation_options()
+
+  
 
 
-class WheelProductType(DjangoObjectType, CommonProductFields):
+class WheelProductType(DjangoObjectType):
     variants = List(WheelVariantType)
 
     class Meta:
@@ -110,7 +102,8 @@ class WheelProductType(DjangoObjectType, CommonProductFields):
         return root.variants.all()
 
 
-class TireProductType(DjangoObjectType, CommonProductFields):
+
+class TireProductType(DjangoObjectType):
     variants = List(TireVariantType)
 
     class Meta:

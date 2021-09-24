@@ -1,7 +1,10 @@
-from graphene import ObjectType, String, Int, Union
+from graphene import ObjectType, String, Union, NonNull, List
 from graphene_django import DjangoObjectType
 from product_variant.models import WheelProductVariant, TireProductVariant
 
+class VariationOptionType(ObjectType):
+    label = NonNull(String)
+    options = List(NonNull(String))
 
 class WheelVariantType(DjangoObjectType):
     class Meta:
@@ -9,6 +12,14 @@ class WheelVariantType(DjangoObjectType):
         model = WheelProductVariant
         exclude = ('product_model',)
         convert_choices_to_enum = False
+
+    def resolve_variation_options(root, info):
+        obj = {
+            'label': "Fake",
+            'options': ['ONE', 'TWO']
+        }
+        li = [obj]
+        return li
 
 
 class TireVariantType(DjangoObjectType):

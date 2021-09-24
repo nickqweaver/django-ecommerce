@@ -15,6 +15,11 @@ class BaseVariant(models.Model):
     def __str__(self):
         return self.product_code
 
+    def get_base_variant_field_names(self):
+        return [f.name for f in self._meta.get_fields()] 
+
+
+
 
 class WheelProductVariant(BaseVariant):
     SIZE_CHOICES = (
@@ -35,6 +40,7 @@ class WheelProductVariant(BaseVariant):
         max_length=6, choices=BoltPattern.choices, default='RZR')
     product_model = models.ForeignKey(
         WheelProductModel, on_delete=models.CASCADE, related_name='variants')
+
 
 
 class TireProductVariant(BaseVariant):
