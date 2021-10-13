@@ -8,7 +8,7 @@ from cloudinary.models import CloudinaryField
 
 class BaseProduct(models.Model):
     name = models.CharField(max_length=150)
-    image = CloudinaryField('image', default=None)
+    image = CloudinaryField('image', default=None) ## TODO = Image should be on the variation not the base product
     description = models.TextField()
     category = models.ForeignKey(
         Category, on_delete=models.CASCADE, related_name='products')
