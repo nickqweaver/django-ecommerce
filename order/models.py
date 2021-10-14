@@ -49,13 +49,32 @@ class OrderItem(models.Model):
 # else
 
 class Order(models.Model):
-    pass
-    ## UUID instead of basic django ID?
-    ## order_items = FK to order_item model (One order can hold many order items)
-    ## status = "pending" | "shipped" | "fufilled" etc...
-    ## FK to customer
-    
-    ## Helper methods
-    ## getTotal - get total price of all order_items combined
-    ## Or do we calculate the total and save it on the model? Not sure exactly how to do this
-    ## getQuantity - get total number of items in the order
+    PENDING = 'PND'
+    SHIPPED = 'SHP'
+    FUFILLED = 'FUF'
+
+    STATUS_CHOICES = (
+      (PENDING, 'pending'),
+      (SHIPPED, 'shipped'),
+      (FUFILLED, 'fufilled'),
+    )
+
+    order_items = models.ForeignKey(OrderItem, related_name='order_items', on_delete=models.CASCADE)
+    status = models.CharField(choices=STATUS_CHOICES, default=PENDING, max_length=3)
+
+    def get_total_price(self):
+      total = 0.00
+      for order_item in self.order_items:
+        product_id = order_item.product_id
+        product_code = order_item.product_code
+        unit_price = BaseProduct.objects.select_subclasses().get(pk=product_id).variants.get(product_code=product_code).unit_price
+
+        total += unit_price
+      return total
+
+    def get_total_quantity(self):
+      quantity = 0
+      for order_item in self.order_items:
+        quantity += order_item.quantity
+
+      return quantity

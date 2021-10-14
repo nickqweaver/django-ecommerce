@@ -4,7 +4,11 @@ from product.models import BaseProduct
 from order.models import OrderItem
 from graphene import ObjectType
 
+## Creation of an OrderItem isn't very handy. However we can write a mutation to create an order
+## that will accept a collection of product ids/codes & quanities and then generate the order items
+## then send them to the order
 class CreateOrderItem(graphene.Mutation):
+    ## TODO - Determine the response type if needed 
     response = graphene.String()
 
     class Arguments:
