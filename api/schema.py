@@ -3,6 +3,7 @@ from cloudinary.models import CloudinaryField
 from graphene import String
 from graphene_django import DjangoObjectType
 import graphene
+from order.graphql.mutation import OrderMutations
 
 ## CMD+SHIFT+P save w/o formatting for now, conversion registration needs to happen vefore imports
 @convert_django_field.register(CloudinaryField)
@@ -17,5 +18,7 @@ from product_variant.graphql.query import VariantQuery
 class Query(CategoryQuery, ProductQuery, VariantQuery):
     pass
 
+class Mutation(OrderMutations):
+    pass
 
-schema = graphene.Schema(Query)
+schema = graphene.Schema(Query, mutation=Mutation)
