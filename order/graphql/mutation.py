@@ -17,6 +17,8 @@ def create_order_items(order, product_code, product_id, quantity):
     
     if has_stock:
         total_price = quantity * variation.unit_price
+        variation.stock = variation.stock - quantity
+        variation.save()
         order_item.total_price = total_price
         order_item.save()
     else:
