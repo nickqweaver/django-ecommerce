@@ -49,7 +49,6 @@ class ProductType(ObjectType):
     variation_options = List(NonNull(VariationOptionType))
 
 
-
     def resolve_name(root, info):
         return root.name
 
