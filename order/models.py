@@ -37,7 +37,7 @@ class Order(models.Model):
       
 class OrderItem(models.Model):
   product_id = models.CharField(max_length=150, default='')
-  product_code = models.CharField(max_length=150, default='')
+  variant_id = models.CharField(max_length=150, default='')
   quantity = models.IntegerField(default=0)
   total_price = models.DecimalField(editable=False, max_digits=10, decimal_places=2, default=0.00)
   order = models.ForeignKey(Order, related_name='order_items', on_delete=models.CASCADE)
@@ -50,4 +50,4 @@ class OrderItem(models.Model):
     return has_stock
   
   def __str__(self):
-    return f'{self.order.id}#{self.product_code}'
+    return f'{self.order.id}#{self.variant_id}'

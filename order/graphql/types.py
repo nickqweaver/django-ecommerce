@@ -7,7 +7,7 @@ from product_variant.graphql.types import AllVariantsType
 
 class OrderItemInput(graphene.InputObjectType):
   product_id = graphene.String()
-  product_code = graphene.String()
+  variant_id = graphene.String()
   quantity = graphene.Int()
 
 

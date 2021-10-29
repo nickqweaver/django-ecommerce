@@ -6,13 +6,13 @@ from graphene import ObjectType, String, List, NonNull
 from order.graphql.types import OrderItemInput, OrderItemResponseType
 
 
-def create_order_items(order, product_code, product_id, quantity):
+def create_order_items(order, variant_id, product_id, quantity):
   
   try:
     subclassed_product = BaseProduct.objects.select_subclasses().get(pk=product_id)
-    variation = subclassed_product.variants.get(product_code=product_code)
+    variation = subclassed_product.variants.get(pk=variant_id)
     image = subclassed_product.image
-    order_item = OrderItem(order=order, product_id=product_id, product_code=product_code, quantity=quantity)
+    order_item = OrderItem(order=order, product_id=product_id, variant_id=variant_id, quantity=quantity)
     has_stock = order_item.check_stock(variation)
     
     if has_stock:
@@ -24,7 +24,7 @@ def create_order_items(order, product_code, product_id, quantity):
     else:
         return OrderItemResponseType(variation, "error", "There are not enough items in stock for this product. This item could not be added to the order", image)
   except Exception as e:
-      return OrderItemResponseType(None, "error", f'There was a problem adding item with product_id of {product_id} and product_code of {product_code}. Exception thrown was {e}', None)
+      return OrderItemResponseType(None, "error", f'There was a problem adding item with product_id of {product_id} and variant_id of {variant_id}. Exception thrown was {e}', None)
 
   return OrderItemResponseType(variation, "success", f'The item was successfully added to order {order.id}', image)
 
@@ -45,7 +45,7 @@ class CreateOrder(graphene.Mutation):
     id = None
 
     for order_item in order_items:
-      order_item_responses.append(create_order_items(order=order, product_id=order_item.product_id, product_code=order_item.product_code, quantity=order_item.quantity))
+      order_item_responses.append(create_order_items(order=order, product_id=order_item.product_id, variant_id=order_item.variant_id, quantity=order_item.quantity))
 
     ## If there are no items to add to the order we just delete the order from the DB
     if (len(order.order_items.all()) == 0):
