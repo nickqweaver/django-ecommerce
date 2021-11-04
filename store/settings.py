@@ -36,6 +36,7 @@ DEBUG = env('DEBUG')
 
 ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 
+
 CORS_ALLOWED_ORIGINS = (
     'http://localhost:8000',
     'http://localhost:8800',
@@ -48,9 +49,9 @@ CORS_ALLOWED_ORIGINS = (
 INSTALLED_APPS = [
     'corsheaders',
     'category',
-    'customer',
     'order',
     'product',
+    'customer',
     'product_variant',
     'brand',
     'django.contrib.admin',
@@ -170,3 +171,5 @@ STATICFILES_DIRS = (os.path.join(BASE_DIR, 'static'), )
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+AUTH_USER_MODEL = 'customer.Customer'

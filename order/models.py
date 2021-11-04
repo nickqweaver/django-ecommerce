@@ -1,6 +1,7 @@
 from django.db import models
 from django.db.models.fields.related import ManyToManyField
 from product.models import BaseProduct
+from customer.models import Profile
 class Order(models.Model):
     PENDING = 'PND'
     SHIPPED = 'SHP'
@@ -13,6 +14,7 @@ class Order(models.Model):
     )
 
     status = models.CharField(choices=STATUS_CHOICES, default=PENDING, max_length=3)
+    profile = models.ForeignKey(Profile, related_name='orders', on_delete=models.CASCADE)
 
     def get_total_price(self):
       total = 0.00
