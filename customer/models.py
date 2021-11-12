@@ -4,6 +4,7 @@ from django.db.models.fields import CharField
 from django.db.models.fields.related import ForeignKey, OneToOneField
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+from store import settings
 
 
 STATE_CHOICES = (
@@ -68,7 +69,7 @@ class Customer(AbstractUser):
 
 class Profile(models.Model):
   user = models.OneToOneField(
-        Customer, on_delete=models.CASCADE, related_name="profile")
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="profile")
 
 class Address(models.Model):
     name = CharField(max_length=30, blank=True, default='')

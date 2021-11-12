@@ -9,6 +9,7 @@ from graphene import String
 from graphene_django import DjangoObjectType
 import graphene
 from order.graphql.mutation import OrderMutations
+from customer.graphql.mutation import CustomerMutations
 
 
 
@@ -19,7 +20,7 @@ from product_variant.graphql.query import VariantQuery
 class Query(CategoryQuery, ProductQuery, VariantQuery):
     pass
 
-class Mutation(OrderMutations):
+class Mutation(OrderMutations, CustomerMutations):
     pass
 
 schema = graphene.Schema(Query, mutation=Mutation)
