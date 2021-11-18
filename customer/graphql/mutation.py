@@ -37,12 +37,7 @@ class UpdateAddress(Mutation):
 
   def mutate(root, self, address, id):
     user_profile = get_user_model().objects.get(pk=id).profile
-    ## Get or Create address object here and add profile to it ?
-    ## How do we handle the fact that a user can have multiple address's?
-    ## Maybe we have add address mutation and update address mutation, to update address we
-    ## would just need to pass the address ID up instead of needing to worry about the user's info
-    ## Then if user does not have address we are just simply creating one and attaching their profile
-    ## to it.      
+       
     return UpdateAddress(success=True)
 
 class CreateAddress(Mutation):
