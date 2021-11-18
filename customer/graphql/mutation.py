@@ -5,12 +5,14 @@ from django.contrib.auth import get_user_model, authenticate, login, logout
 from order.models import OrderItem, Order
 from graphene import ObjectType, String, ID, Boolean, Mutation, Field, Int, Enum
 from customer.models import Address
+import graphql_jwt
+from graphql_jwt.shortcuts import get_token
 
 
 class CreateCustomer(Mutation):
   user_id = ID()
   success = Boolean()
-  
+  token = String()
   class Arguments:
     username = String(required=True)
     password = String(required=True)
@@ -18,15 +20,24 @@ class CreateCustomer(Mutation):
 
   def mutate(root, info, username, password, email):
     is_already_user = get_user_model().objects.filter(username=username).exists()
-    
+    user_id = None
+    token = None
+    success = False
+
     if is_already_user:
       return GraphQLError("Username is already in use")
     else:
-      user = get_user_model()(username=username, email=email)
-      user.set_password(password)
-      user.save()
-    
-    return CreateCustomer(user_id=user.id, success=True)
+      try:
+        user = get_user_model()(username=username, email=email)
+        user.set_password(password)
+        user.save()
+        token = get_token(user)
+        success = True
+        user_id = user.id
+      except:
+        return GraphQLError("There was an error creating your account")
+        
+    return CreateCustomer(user_id=user_id, success=success, token=token)
 
 class UpdateAddress(Mutation):
   success = Boolean()
@@ -69,3 +80,6 @@ class CustomerMutations(ObjectType):
   create_customer = CreateCustomer.Field()
   create_address = CreateAddress.Field()
   update_address = UpdateAddress.Field()
+  login_user = graphql_jwt.ObtainJSONWebToken.Field()
+  verify_token = graphql_jwt.Verify.Field()
+  refresh_token = graphql_jwt.Refresh.Field()

@@ -6,3 +6,4 @@ django-cors-headers==3.8.0
 django-model-utils>=4.1.1
 cloudinary>=1.26.0
 django-environ>=0.6.0
+django-graphql-jwt==0.3.2
