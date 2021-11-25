@@ -34,12 +34,20 @@ class CreateOrder(graphene.Mutation):
   message = graphene.String()
   id = graphene.ID()
   order_items = graphene.List(NonNull(OrderItemResponseType))
-
+  ## If the token is appended to the request there should be a way to get 
+  ## The users profile from the token and then adding that profile to the order
   class Arguments:
     order_items = graphene.List(OrderItemInput)
 
   def mutate(root, info, order_items):
+    user = info.context.user  
+    print(user.username, "USERNAME")
+
+    if not user.is_authenticated:
+        raise Exception("You must be logged in to create an order!")
+
     order = Order.objects.create()
+    order.profile = user.profile
     order_item_responses = []
     status = "success"
     id = None
