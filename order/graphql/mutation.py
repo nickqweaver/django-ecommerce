@@ -4,6 +4,8 @@ from product.models import BaseProduct
 from order.models import OrderItem, Order
 from graphene import ObjectType, String, List, NonNull
 from order.graphql.types import OrderItemInput, OrderItemResponseType
+from graphql_jwt.decorators import login_required
+
 
 
 def create_order_items(order, variant_id, product_id, quantity):
@@ -37,11 +39,9 @@ class CreateOrder(graphene.Mutation):
   class Arguments:
     order_items = graphene.List(OrderItemInput)
 
+  @login_required
   def mutate(root, info, order_items):
     user = info.context.user  
-
-    if not user.is_authenticated:
-        raise Exception("You must be logged in to create an order!")
    
     order = Order(profile=user.profile)
     order.save()

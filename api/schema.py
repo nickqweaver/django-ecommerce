@@ -5,19 +5,20 @@ from cloudinary.models import CloudinaryField
 @convert_django_field.register(CloudinaryField)
 def convert_cloudinary_to_string(field, registry=None):
     return field
+
 from graphene import String
 from graphene_django import DjangoObjectType
 import graphene
 from order.graphql.mutation import OrderMutations
+from order.graphql.query import OrderQuery
 from customer.graphql.mutation import CustomerMutations
-
 
 
 from product.graphql.query import ProductQuery
 from category.graphql.query import CategoryQuery
 from product_variant.graphql.query import VariantQuery
 
-class Query(CategoryQuery, ProductQuery, VariantQuery):
+class Query(CategoryQuery, ProductQuery, VariantQuery, OrderQuery):
     pass
 
 class Mutation(OrderMutations, CustomerMutations):

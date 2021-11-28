@@ -29,7 +29,7 @@ from django.urls import path
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('products/', include('product.urls')),
-    path("graphql", csrf_exempt(jwt_cookie(GraphQLView.as_view(graphiql=True, schema=schema)))),
+    path("graphql", csrf_exempt(GraphQLView.as_view(graphiql=True, schema=schema)))
 ]
 
 if settings.DEBUG:

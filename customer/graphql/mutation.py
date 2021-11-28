@@ -1,7 +1,7 @@
 from customer.graphql.types import AddressInput, AddressType
 from customer.models import STATE_CHOICES
 from graphql import GraphQLError
-from django.contrib.auth import get_user_model, authenticate, login, logout
+from django.contrib.auth import get_user_model, authenticate
 from order.models import OrderItem, Order
 from graphene import ObjectType, String, ID, Boolean, Mutation, Field, NonNull
 from customer.models import Address
@@ -75,32 +75,12 @@ class Login(Mutation):
   def mutate(root, info, username, password):
     try:
       user = authenticate(username=username, password=password)
-      login(info.context, user)
       token = get_token(user)
     except:
         raise GraphQLError("You entered the wrong username or password")
   
     return Login(success=True, token=token)
 
-class Logout(Mutation):
-  success = Boolean()
-  message = String()
-
-  def mutate(root, info):
-    success = True
-    message = "You have been successfully logged out"
-
-    try:
-      if not is_authenticated(info.context.user):
-        success = False
-        message = "You are already logged out"
-      else:
-        logout(info.context)
-    except:
-      success = False
-      message = "There was a problem logging you out"
-  
-    return Logout(success=success, message=message)
 
 class CreateAddress(Mutation):
   success = Boolean()
@@ -131,6 +111,5 @@ class CustomerMutations(ObjectType):
   create_address = CreateAddress.Field()
   update_address = UpdateAddress.Field()
   login = Login.Field()
-  logout = Logout.Field()
   verify_token = graphql_jwt.Verify.Field()
   refresh_token = graphql_jwt.Refresh.Field()
