@@ -1,5 +1,5 @@
 import graphene
-from graphene import String, ObjectType, Field, List, ID
+from graphene import String, ObjectType, Field, List, ID, Int, Float
 from graphene_django import DjangoObjectType
 from order.models import Order, OrderItem
 from product.graphql.types import CloudinaryImageType
@@ -28,3 +28,4 @@ class OrderType(ObjectType):
   order_items = List(OrderItemQueryResponseType)
   id = ID()
   status = String()
+  totalPrice = Float()

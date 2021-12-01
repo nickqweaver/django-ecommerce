@@ -2,6 +2,7 @@ from graphene import List, Field, ObjectType, String, Int, ID, Field
 from order.graphql.types import OrderItemQueryResponseType, OrderType, OrderItemResponseType
 from order.models import Order
 from product.models import BaseProduct
+from graphql_jwt.decorators import login_required
 
 def parse_order(order):
   parsed_order_items = []
@@ -16,14 +17,15 @@ def parse_order(order):
     except:
       raise Exception("Could not retrieve order item details")
   
-  return OrderType(order_items=parsed_order_items, status=order.status, id=order.id)
+  return OrderType(order_items=parsed_order_items, status=order.status, id=order.id, totalPrice=order.get_total_price())
 
 
 class OrderQuery(ObjectType):
     ## TODO Paginate Results
-    get_all_user_orders = List(OrderType)
+    get_all_user_orders = List(OrderType) ## Can we add a filter option as an optional arg instead of queyr by ID?
     get_order_by_id = Field(OrderType, id=ID())
-
+    
+    @login_required
     def resolve_get_all_user_orders(root, info):
         user = info.context.user
         orders = user.profile.orders.all()
@@ -34,6 +36,7 @@ class OrderQuery(ObjectType):
 
         return new_orders
 
+    @login_required
     def resolve_get_order_by_id(root, info, id):
       order = info.context.user.profile.orders.get(pk=id)
       return parse_order(order)

@@ -18,12 +18,11 @@ class Order(models.Model):
 
     def get_total_price(self):
       total = 0.00
-      for order_item in self.order_items:
-        product_id = order_item.product_id
-        product_code = order_item.product_code
-        unit_price = BaseProduct.objects.select_subclasses().get(pk=product_id).variants.get(product_code=product_code).unit_price
+      
+      for order_item in self.order_items.all():
+        floated_total = float(order_item.total_price)
+        total += floated_total
 
-        total += unit_price
       return total
 
     def get_total_quantity(self):
