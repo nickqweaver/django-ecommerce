@@ -1,5 +1,5 @@
 import graphene
-from graphene import String, ObjectType, Field, List, ID, Int, Float
+from graphene import String, ObjectType, Field, List, ID, Int, Float, Date
 from graphene_django import DjangoObjectType
 from order.models import Order, OrderItem
 from product.graphql.types import CloudinaryImageType
@@ -29,3 +29,21 @@ class OrderType(ObjectType):
   id = ID()
   status = String()
   totalPrice = Float()
+  date_placed = Date()
+
+class OrderPriceFilterType(graphene.InputObjectType):
+  less = Float()
+  more = Float()
+  eq = Float()
+
+class OrderDateFilterType(graphene.InputObjectType):
+  start = Date()
+  end = Date()
+  
+class OrderFilterByType(graphene.InputObjectType):
+  ids = List(ID)
+  date = OrderDateFilterType()
+  price = OrderPriceFilterType()
+
+class OrderFilterInputType(graphene.InputObjectType):
+  by = OrderFilterByType()
