@@ -16,6 +16,11 @@ class Order(models.Model):
     status = models.CharField(choices=STATUS_CHOICES, default=PENDING, max_length=3)
     profile = models.ForeignKey(Profile, related_name='orders', on_delete=models.CASCADE)
     date_placed = models.DateTimeField(auto_now=True)
+    total_price = models.DecimalField(editable=False, max_digits=10, decimal_places=2, default=0.00)
+
+    def save(self, *args, **kwargs):
+        self.total_price = self.get_total_price()
+        super(Order, self).save(*args, **kwargs)
 
     def get_total_price(self):
       total = 0.00

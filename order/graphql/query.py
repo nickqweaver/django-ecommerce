@@ -4,6 +4,9 @@ from order.models import Order
 from product.models import BaseProduct
 from graphql_jwt.decorators import login_required
 from datetime import datetime
+from django.db.models import Q
+
+from utils.filter_aggregator import FilterAggregator
 
 def parse_order(order):
   parsed_order_items = []
@@ -28,19 +31,28 @@ class OrderQuery(ObjectType):
     
     @login_required
     def resolve_get_orders(root, info, filter):
+        import operator
+        import functools
+
         user = info.context.user
         orders = None
 
         new_orders = []
 
+        filters = FilterAggregator("AND")
+     
+        # Only add the filters that were specified 
         if filter and filter.by:
-          orders = user.profile.orders.all()
           if filter.by.ids:
-            orders.filter(pk__in=filter.by.ids)
+             filters.add(Q(pk__in=filter.by.ids))
           if filter.by.date:
-            ## This works but how do we chain them together dynamically?
-            ## If we set to all first then none of the filters get applied
-            orders = user.profile.orders.filter(date_placed__range=[filter.by.date.start, filter.by.date.end], pk__in=filter.by.ids)
+            filters.add(Q(date_placed__range=[filter.by.date.start, filter.by.date.end]))
+          if filter.by.price.eq:
+            filters.add(Q(total_price=filter.by.price.eq))
+
+        # Using reduce to concat all the Q Objects together with & operator to enable multiple filters
+        if filter:
+          orders = user.profile.orders.filter(filters.get_aggregated_results())
         else:
           orders = user.profile.orders.all()
      
@@ -48,10 +60,3 @@ class OrderQuery(ObjectType):
           new_orders.append(parse_order(order))
 
         return new_orders
-
-    ## Deprecate this, use a filter in the above query instead so user will be limited to their own orders
-    @login_required
-    def resolve_get_order_by_id(root, info, id):
-      order = info.context.user.profile.orders.get(pk=id)
-      return parse_order(order)
-    

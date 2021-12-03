@@ -7,7 +7,6 @@ from order.graphql.types import OrderItemInput, OrderItemResponseType
 from graphql_jwt.decorators import login_required
 
 
-
 def create_order_items(order, variant_id, product_id, quantity):
   
   try:
@@ -24,11 +23,11 @@ def create_order_items(order, variant_id, product_id, quantity):
         order_item.total_price = total_price
         order_item.save()
     else:
-        return OrderItemResponseType(variation, "error", "There are not enough items in stock for this product. This item could not be added to the order", image)
+        return OrderItemResponseType(product_variation=variation, response="error", message="There are not enough items in stock for this product. This item could not be added to the order", image=image)
   except Exception as e:
-      return OrderItemResponseType(None, "error", f'There was a problem adding item with product_id of {product_id} and variant_id of {variant_id}. Exception thrown was {e}', None)
+      return OrderItemResponseType(product_variation=None, response="error", message=f'There was a problem adding item with product_id of {product_id} and variant_id of {variant_id}. Exception thrown was {e}', image=None)
 
-  return OrderItemResponseType(variation, "success", f'The item was successfully added to order {order.id}', image)
+  return OrderItemResponseType(product_variation=variation, response="success", message=f'The item was successfully added to order {order.id}', image=image)
 
 
 class CreateOrder(graphene.Mutation):
@@ -36,6 +35,7 @@ class CreateOrder(graphene.Mutation):
   message = graphene.String()
   id = graphene.ID()
   order_items = graphene.List(NonNull(OrderItemResponseType))
+  ## Return total 
   class Arguments:
     order_items = graphene.List(OrderItemInput)
 

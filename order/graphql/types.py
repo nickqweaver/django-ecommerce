@@ -39,7 +39,7 @@ class OrderPriceFilterType(graphene.InputObjectType):
 class OrderDateFilterType(graphene.InputObjectType):
   start = Date()
   end = Date()
-  
+
 class OrderFilterByType(graphene.InputObjectType):
   ids = List(ID)
   date = OrderDateFilterType()

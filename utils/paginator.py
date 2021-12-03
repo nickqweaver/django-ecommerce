@@ -1,38 +1,53 @@
-class PaginatedResults():
-    results = None
-    has_more = False
+from typing import List
+from typing import TypeVar, Generic
 
-    def __init__(self, results, has_more, with_subclasses=False):
-        if with_subclasses:
-            self.results = results.select_subclasses()
-        else:
-            self.results = results
-        self.has_more = has_more
+T = TypeVar('T')
 
 
-class Paginator():
-    objects = None
-    current_position = 0
-    has_more = False
-    with_subclasses = False
+class PaginatedResults(Generic[T]):
 
-    def __init__(self, objects, with_subclasses=False):
-        self.objects = objects
-        self.__check_and_set_has_more(self.current_position, objects)
-        self.with_subclasses = with_subclasses
+    def __init__(self, results: List[T], has_more: bool = False) -> None:
+        self._results = results
+        self._has_more = has_more
 
-    def __check_and_set_has_more(self, current_position, objects):
+    @property
+    def results(self) -> List[T]:
+        return self._results
+
+    @property
+    def has_more(self) -> bool:
+        return self._has_more
+
+    @results.setter
+    def results(self, results: List[T]) -> None:
+        self._results = results
+
+    @has_more.setter
+    def has_more(self, has_more: bool) -> None:
+        self._has_more = has_more
+
+
+class Paginator(Generic[T]):
+    _objects: T
+    _current_position: int = 0
+    _has_more: bool
+
+    def __init__(self, objects):
+        self._objects = objects
+        self.__check_and_set_has_more(self._current_position, objects)
+
+    def __check_and_set_has_more(self, current_position, objects) -> None:
         if current_position >= len(objects.all()):
             self.has_more = False
         else:
             self.has_more = True
 
-    def get_objects(self, offset, limit):
-        self.current_position = offset + limit
-        self.__check_and_set_has_more(self.current_position, self.objects)
+    def get_objects(self, offset, limit) -> List[T]:
+        self._current_position = offset + limit
+        self.__check_and_set_has_more(self._current_position, self._objects)
         try:
-            results = PaginatedResults(
-                self.objects.all()[offset:limit], self.has_more, self.with_subclasses)
+            results: List[T] = PaginatedResults(
+                self._objects.all()[offset:offset+limit], self.has_more)
             return results
         except:
             raise Exception(
