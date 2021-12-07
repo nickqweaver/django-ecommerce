@@ -1,4 +1,4 @@
-from graphene import List, Field, ObjectType, String, Int, ID, Field
+from graphene import List, Field, ObjectType, ID, Field
 from order.graphql.types import OrderFilterInputType, OrderItemQueryResponseType, OrderType
 from order.models import Order
 from product.models import BaseProduct
@@ -26,8 +26,7 @@ def parse_order(order):
 
 class OrderQuery(ObjectType):
     ## TODO Paginate Results
-    get_orders = List(OrderType, filter=OrderFilterInputType()) ## Can we add a filter option as an optional arg instead of queyr by ID?
-    get_order_by_id = Field(OrderType, id=ID())
+    get_orders = List(OrderType, filter=OrderFilterInputType())
     
     @login_required
     def resolve_get_orders(root, info, filter):
@@ -50,7 +49,6 @@ class OrderQuery(ObjectType):
           if filter.by.price.eq:
             filters.add(Q(total_price=filter.by.price.eq))
 
-        # Using reduce to concat all the Q Objects together with & operator to enable multiple filters
         if filter:
           orders = user.profile.orders.filter(filters.get_aggregated_results())
         else:
