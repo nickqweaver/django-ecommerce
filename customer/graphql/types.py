@@ -1,8 +1,8 @@
 
 import graphene
-from graphene import String, Int, Enum, Field
+from graphene import String, Int
 from graphene_django import DjangoObjectType
-from customer.models import COUNTRIES, STATE_CHOICES, Address
+from customer.models import Address, Profile, Customer
 
 class AddressInput(graphene.InputObjectType):
     line_1 = String(required=True)
@@ -17,3 +17,12 @@ class AddressInput(graphene.InputObjectType):
 class AddressType(DjangoObjectType):
   class Meta:
     model = Address
+
+class ProfileType(DjangoObjectType):
+  class Meta:
+    model = Profile
+
+class CustomerType(DjangoObjectType):
+
+  class Meta:
+    model = Customer

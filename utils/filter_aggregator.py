@@ -4,11 +4,11 @@ import functools
 
 class FilterAggregator:
 
-  def __init__(self, operand: str ):
+  def __init__(self, operand: str ) -> None:
     self._operand: str = operand
     self._list = []
 
-  def add(self, q_object: Q):
+  def add(self, q_object: Q) -> None:
     self._list.append(q_object)
 
   def get_aggregated_results(self) -> Q:

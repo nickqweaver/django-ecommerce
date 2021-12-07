@@ -12,13 +12,14 @@ import graphene
 from order.graphql.mutation import OrderMutations
 from order.graphql.query import OrderQuery
 from customer.graphql.mutation import CustomerMutations
+from customer.graphql.query import CustomerQuery
 
 
 from product.graphql.query import ProductQuery
 from category.graphql.query import CategoryQuery
 from product_variant.graphql.query import VariantQuery
 
-class Query(CategoryQuery, ProductQuery, VariantQuery, OrderQuery):
+class Query(CategoryQuery, ProductQuery, VariantQuery, OrderQuery, CustomerQuery):
     pass
 
 class Mutation(OrderMutations, CustomerMutations):
