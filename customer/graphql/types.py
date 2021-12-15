@@ -17,12 +17,15 @@ class AddressInput(graphene.InputObjectType):
 class AddressType(DjangoObjectType):
   class Meta:
     model = Address
+    exclude = ('profile',)
 
 class ProfileType(DjangoObjectType):
   class Meta:
     model = Profile
+    exclude = ('user',)
 
 class CustomerType(DjangoObjectType):
 
   class Meta:
     model = Customer
+    exclude = ('is_active', 'is_superuser', 'password', 'is_staff')

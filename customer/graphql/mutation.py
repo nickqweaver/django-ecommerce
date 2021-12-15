@@ -1,4 +1,4 @@
-from customer.graphql.types import AddressInput, AddressType
+from customer.graphql.types import AddressInput, AddressType, CustomerType
 from customer.models import STATE_CHOICES
 from graphql import GraphQLError
 from django.contrib.auth import get_user_model, authenticate
@@ -7,6 +7,7 @@ from graphene import ObjectType, String, ID, Boolean, Mutation, Field, NonNull
 from customer.models import Address
 import graphql_jwt
 from graphql_jwt.shortcuts import get_token
+from graphql_jwt.decorators import login_required
 
 '''
   The token needs to be stored in session storage on the frontend but for security needs
@@ -24,7 +25,7 @@ def is_authenticated(user):
       return True
         
 class CreateCustomer(Mutation):
-  user_id = ID()
+  customer = Field(CustomerType)
   success = Boolean()
   token = String()
   class Arguments:
@@ -34,7 +35,6 @@ class CreateCustomer(Mutation):
 
   def mutate(root, info, username, password, email):
     is_already_user = get_user_model().objects.filter(username=username).exists()
-    user_id = None
     token = None
     success = False
 
@@ -47,27 +47,27 @@ class CreateCustomer(Mutation):
         user.save()
         token = get_token(user)
         success = True
-        user_id = user.id
       except:
         return GraphQLError("There was an error creating your account")
 
-    return CreateCustomer(user_id=user_id, success=success, token=token)
+    return CreateCustomer(success=success, token=token, customer=user)
 
-class UpdateAddress(Mutation):
-  success = Boolean()
+# class UpdateAddress(Mutation):
+#   success = Boolean()
 
-  class Arguments:
-    user_id = ID()
-    address = AddressInput()
+#   class Arguments:
+#     user_id = ID()
+#     address = AddressInput()
 
-  def mutate(root, self, address, id):
-    user_profile = get_user_model().objects.get(pk=id).profile
+#   def mutate(root, self, address, id):
+#     user_profile = get_user_model().objects.get(pk=id).profile
        
-    return UpdateAddress(success=True)
+#     return UpdateAddress(success=True)
 
 class Login(Mutation):
   success = Boolean()
   token = String()
+  customer = Field(CustomerType)
   class Arguments:
     username = NonNull(String)
     password = NonNull(String)
@@ -76,10 +76,11 @@ class Login(Mutation):
     try:
       user = authenticate(username=username, password=password)
       token = get_token(user)
+
     except:
         raise GraphQLError("You entered the wrong username or password")
   
-    return Login(success=True, token=token)
+    return Login(success=True, token=token, customer=user)
 
 
 class CreateAddress(Mutation):
@@ -88,15 +89,16 @@ class CreateAddress(Mutation):
 
   class Arguments:
     address = AddressInput()
-    user_id = ID()
 
-  def mutate(root, info, address, user_id):
+  @login_required
+  def mutate(root, info, address):
     new_address = None
     success = True
+    user = info.context.user
     try:
       ## TODO - get_or_create will always create new even if everything is the same except 1 field. 
       ## Should handle this better by checking if the address object has comparable values and update instead of create
-      profile = get_user_model().objects.get(pk=user_id).profile
+      profile = user.profile
       new_address, created = Address.objects.get_or_create(profile=profile, address1=address.line_1, address2=address.line_2, zip_code=address.zip, state=address.state, city=address.city, country=address.country)
     except:
       success = False
@@ -109,7 +111,7 @@ class CreateAddress(Mutation):
 class CustomerMutations(ObjectType):
   create_customer = CreateCustomer.Field()
   create_address = CreateAddress.Field()
-  update_address = UpdateAddress.Field()
+  # update_address = UpdateAddress.Field()
   login = Login.Field()
   verify_token = graphql_jwt.Verify.Field()
   refresh_token = graphql_jwt.Refresh.Field()

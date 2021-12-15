@@ -13,14 +13,6 @@ class WheelVariantType(DjangoObjectType):
         exclude = ('product_model',)
         convert_choices_to_enum = False
 
-    def resolve_variation_options(root, info):
-        obj = {
-            'label': "Fake",
-            'options': ['ONE', 'TWO']
-        }
-        li = [obj]
-        return li
-
 
 class TireVariantType(DjangoObjectType):
     class Meta:
