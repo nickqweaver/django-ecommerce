@@ -1,5 +1,5 @@
 from django.db import models
-from product.models import WheelProductModel, TireProductModel
+from product.models import WheelProductModel, TireProductModel, BaseProduct
 # Create your models here.
 
 
@@ -77,3 +77,4 @@ class TireProductVariant(BaseVariant):
     rim_circumference = models.IntegerField(choices=RIM_CIRCUMFERENCE_CHOICES)
     product_model = models.ForeignKey(
         TireProductModel, on_delete=models.CASCADE, related_name='variants')
+

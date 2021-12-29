@@ -1,7 +1,7 @@
 from graphene import List, Field, ObjectType, String, Int, ID
 from category.models import Category
 from .types import CategoryType
-from product.graphql.types import ProductType, PaginatedProductIdsType
+from product.graphql.types import PaginatedProductIdsType
 from utils.paginator import Paginator, PaginatedResults
 
 
