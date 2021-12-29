@@ -1,18 +1,31 @@
 from graphene_django import DjangoObjectType
-from graphene import Field, List, String, ObjectType, Decimal, Union, Boolean, ID, NonNull
-from product.models import WheelProductModel, TireProductModel
-from product_variant.graphql.types import VariationOptionType, WheelVariantType, TireVariantType
+from graphene import List, String, ObjectType, Decimal, Union, Boolean, ID, NonNull, Field
+from product.models import WheelProductModel, TireProductModel, BaseProduct
+from product_variant.graphql.types import VariationOptionType, WheelVariantType, TireVariantType, AllVariantsType
 
 class CloudinaryImageType(ObjectType):
-    public_id = NonNull(String)
+    id = NonNull(String)
     format = String()
     type = String()
     url = NonNull(String)
 
-class CommonProductType(ObjectType):
+    def resolve_id(self, _info):
+        return self.public_id
+
+class ProductType(DjangoObjectType):
+    variants = List(NonNull(AllVariantsType))
     has_different_variant_pricing = NonNull(Boolean)
     lowest_variant_price = NonNull(Decimal)
     variation_options = List(NonNull(VariationOptionType))
+    image = Field(NonNull(CloudinaryImageType))
+    brand = NonNull(String)
+
+    class Meta:
+        model = BaseProduct
+        exclude = ('tireproductmodel', 'wheelproductmodel')
+
+    def resolve_variants(self, _info):
+        return self.get_product_variants()
 
     def resolve_lowest_variant_price(self, _info):
         return self.get_lowest_variant_price()
@@ -20,35 +33,19 @@ class CommonProductType(ObjectType):
     def resolve_has_different_variant_pricing(self, _info):
         return self.has_different_variant_pricing()
 
-    def resolve_variation_options(self, info):
+    def resolve_variation_options(self, _info):
         return self.get_variation_options()
 
-class WheelProductType(DjangoObjectType, CommonProductType):
-    variants = List(WheelVariantType)
+    def resolve_image(self, _info):
+        return self.image
 
-    class Meta:
-        model = WheelProductModel
+    def resolve_brand(self, _info):
+        return self.brand
 
-    def resolve_variants(self, _info):
-        return self.variants.all()
-
-class TireProductType(DjangoObjectType, CommonProductType):
-    variants = List(TireVariantType)
-
-    class Meta:
-        model = TireProductModel
-
-    def resolve_variants(self, _info):
-        return self.variants.all()
-
-class AllProductType(Union):
-    class Meta:
-        types = (WheelProductType, TireProductType)
-        exclude = ('tireproductmodel', 'wheelproductmodel',)
 
 class PaginatedProductsType(ObjectType):
     has_more = Boolean()
-    results = List(NonNull(AllProductType))
+    results = List(NonNull(ProductType))
 
 class PaginatedProductIdsType(ObjectType):
     has_more = Boolean()

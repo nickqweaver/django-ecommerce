@@ -79,13 +79,20 @@ class BaseProduct(models.Model):
         return f'{self.name}'
 
     def get_lowest_variant_price(self):
-        return lowest_price(self.variants.all())
+        variants = BaseProduct.objects.select_subclasses().get(pk=self.id).variants.all()
+        return lowest_price(variants)
 
     def has_different_variant_pricing(self):
-        return has_different_pricing(self.variants.all())
+        variants = BaseProduct.objects.select_subclasses().get(pk=self.id).variants.all()
+        return has_different_pricing(variants)
 
     def get_variation_options(self):
-        return parse_variation_options(self.variants.all())
+        variants = BaseProduct.objects.select_subclasses().get(pk=self.id).variants.all()
+        return parse_variation_options(variants)
+
+    def get_product_variants(self):
+        variants = BaseProduct.objects.select_subclasses().get(pk=self.id).variants.all()
+        return variants
 
 
 class WheelProductModel(BaseProduct):
